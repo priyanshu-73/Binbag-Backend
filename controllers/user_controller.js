@@ -46,7 +46,7 @@ export const createProfile = async (req, res) => {
 export const getProfile = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.json({ message: "All fields are reuqired!" });
+    return res.json({ message: "All fields are required!" });
   }
 
   try {
@@ -64,7 +64,7 @@ export const getProfile = async (req, res) => {
     res
       .cookie("access_token", token)
       .status(200)
-      .json({ name: user.name, email: user.email });
+      .json({ name: user.name, email: user.email, id: user._id });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -73,10 +73,18 @@ export const getProfile = async (req, res) => {
 export const updateProfile = async (req, res) => {
   const { id } = req.params;
   const { name, email, password } = req.body;
-
   if (!name && !email && !password) {
     await User.findOneAndDelete({ email });
     return res.status(200).json({ message: "User Deleted" });
+  }
+
+  const loggedInUserEmail = req.user.email;
+  const loggedInUser = await User.findOne({ loggedInUserEmail });
+
+  if (loggedInUser && loggedInUser._id !== id) {
+    return res
+      .status(200)
+      .json({ message: "You can only update your own profile!" });
   }
 
   const emailExist = await User.findOne({ email });
