@@ -39,7 +39,8 @@ export const createProfile = async (req, res) => {
       .status(200)
       .json({ message: "User created", user });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.log(error.message);
+    res.status(400).json({ error: "Internal Server Error" });
   }
 };
 
@@ -66,7 +67,8 @@ export const getProfile = async (req, res) => {
       .status(200)
       .json({ name: user.name, email: user.email, id: user._id });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.log(error.message);
+    res.status(400).json({ error: "Internal Server Error" });
   }
 };
 
@@ -109,6 +111,7 @@ export const updateProfile = async (req, res) => {
 
     res.status(200).json({ message: "Profile Updated" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.log(error.message);
+    res.status(400).json({ error: "Internal Server error" });
   }
 };
